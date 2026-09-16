@@ -568,7 +568,7 @@ Manufactured goods dominated both exports and imports, accounting for approximat
 
 ### How state trade exposure changed
 
-Trade exposure measures each state's exports or imports as a percentage of its total GDP. The KPIs below show that export exposure declined in a large majority of states. Among states where import exposure increased, the average rise was about 2 percentage points—a relatively modest shift.
+Trade exposure measures each state's exports or imports as a percentage of its total GDP. The KPIs below show that export exposure declined in a large majority of states. Among states where import exposure increased, the average rise was about 2 percentage points (a relatively small shift).
 
 ```{python}
 #| label: trade-exposure-query
@@ -666,7 +666,7 @@ plt.show()
 
 ### Which trade sectors grew fastest?
 
-The final trade comparison ranks export and import sectors by their percentage growth between 2010 and 2024. The two charts use independent scales as the leading export and import growth rates differ substantially.
+The final trade comparison ranks export and import sectors by their percentage growth between 2010 and 2024.
 
 ```{python}
 #| label: trade-sector-growth-query
