@@ -1,0 +1,836 @@
+---
+title: "U.S. GDP Growth, Industry Change, Trade, and Tennessee"
+author: "Matthew Butera"
+date: last-modified
+description: "State GDP growth, industry contribution, international trade, and Tennessee from 2010 to 2024."
+page-layout: full
+title-block-banner: false
+jupyter: python3
+---
+
+:::: {.project-hero}
+::: {.hero-copy}
+<p class="eyebrow">ECONOMIC GROWTH ANALYSIS</p>
+
+# U.S. GDP Growth, Industry Change, Trade, and Tennessee
+
+The principal comparison is **2010–2024**. GDP values are nominal dollars, and GDP per capita divides each state-industry value by that state's estimated population.
+
+::: {.hero-meta}
+<span>MATTHEW BUTERA</span>
+<span>PYTHON / TABLEAU</span>
+:::
+:::
+
+
+<div class="accent-line"></div>
+
+::::
+
+```{python}
+#| label: imports
+#| include: false
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+
+sns.set_theme(style='whitegrid', context='notebook')
+COLORS = sns.color_palette('colorblind')
+plt.rcParams.update({
+    'figure.dpi': 110,
+    'axes.titleweight': 'bold',
+    'axes.spines.top': False,
+    'axes.spines.right': False,
+})
+
+START_YEAR = 2010
+END_YEAR = 2024
+```
+
+
+```{python}
+#| label: load-data
+#| include: false
+
+imports_df = pd.read_csv('../outputs/census_imports.csv')
+exports_df = pd.read_csv('../outputs/census_exports.csv')
+gdp_df = pd.read_csv('../outputs/gdp_states.csv')
+
+imports_df['STATE/REGION'] = imports_df['STATE/REGION'].replace({'DC': 'District of Columbia'})
+exports_df['STATE/REGION'] = exports_df['STATE/REGION'].replace({'DC': 'District of Columbia'})
+```
+
+```{python}
+#| label: grouping-setup
+#| include: false
+
+gdp_overall = gdp_df[gdp_df['NAICS'] == '..0'][['STATE/REGION','YEAR','GDP']].rename(columns={'GDP':'OVERALL_GDP'})
+gdp_df = gdp_df.merge(gdp_overall, on=['STATE/REGION','YEAR'])
+gdp_df['GDP_CAPITA'] = gdp_df['GDP'] / gdp_df['EST_POP']
+
+level_map = dict(gdp_df[['NAICS_LDESC','LEVEL']].drop_duplicates().values)
+
+bea_regions = {
+    # New England
+    'CT': 'New England', 'ME': 'New England', 'MA': 'New England',
+    'NH': 'New England', 'RI': 'New England', 'VT': 'New England',
+    # Mideast
+    'DE': 'Mideast', 'DC': 'Mideast', 'District of Columbia': 'Mideast',
+    'MD': 'Mideast', 'NJ': 'Mideast', 'NY': 'Mideast', 'PA': 'Mideast',
+    # Great Lakes
+    'IL': 'Great Lakes', 'IN': 'Great Lakes', 'MI': 'Great Lakes',
+    'OH': 'Great Lakes', 'WI': 'Great Lakes',
+    # Plains
+    'IA': 'Plains', 'KS': 'Plains', 'MN': 'Plains', 'MO': 'Plains',
+    'NE': 'Plains', 'ND': 'Plains', 'SD': 'Plains',
+    # Southeast
+    'AL': 'Southeast', 'AR': 'Southeast', 'FL': 'Southeast', 'GA': 'Southeast',
+    'KY': 'Southeast', 'LA': 'Southeast', 'MS': 'Southeast', 'NC': 'Southeast',
+    'SC': 'Southeast', 'TN': 'Southeast', 'VA': 'Southeast', 'WV': 'Southeast',
+    # Southwest
+    'AZ': 'Southwest', 'NM': 'Southwest', 'OK': 'Southwest', 'TX': 'Southwest',
+    # Rocky Mountain
+    'CO': 'Rocky Mountain', 'ID': 'Rocky Mountain', 'MT': 'Rocky Mountain',
+    'UT': 'Rocky Mountain', 'WY': 'Rocky Mountain',
+    # Far West
+    'AK': 'Far West', 'CA': 'Far West', 'HI': 'Far West',
+    'NV': 'Far West', 'OR': 'Far West', 'WA': 'Far West'
+}
+
+gdp_df['BEA_REGION'] = gdp_df['STATE/REGION'].map(bea_regions)
+```
+
+## 1. State growth
+
+The first comparison identifies the states with the strongest economic growth from 2010 to 2024. **Nominal GDP growth** measures growth in total economic output, while **GDP per capita** accounts for differences in population size.
+
+```{python}
+#| label: state-growth-query
+#| echo: true
+#| fig-width: 14
+#| fig-height: 6
+#| fig-align: center
+#| out-width: 100%
+
+gdp_2010 = gdp_df.loc[gdp_df['YEAR'] == 2010].drop(columns=['YEAR','EST_POP','OVERALL_GDP','BEA_REGION']).rename(columns={'GDP': 'GDP_2010', 'GDP_CAPITA':'GDP_CAPITA_2010'})
+gdp_2024 = gdp_df.loc[gdp_df['YEAR'] == 2024].drop(columns=['YEAR','EST_POP','OVERALL_GDP','BEA_REGION']).rename(columns={'GDP': 'GDP_2024', 'GDP_CAPITA':'GDP_CAPITA_2024'})
+
+gdp_change = gdp_2010.merge(gdp_2024, on=[
+        'REGION_NAME',
+        'STATE/REGION',
+        'NAICS',
+        'NAICS_LDESC',
+        'LEVEL'])
+gdp_change['GDP_GROWTH'] = (gdp_change['GDP_2024'] - gdp_change['GDP_2010']) / gdp_change['GDP_2010'] * 100
+gdp_change['CAPITA_GROWTH'] = (gdp_change['GDP_CAPITA_2024'] - gdp_change['GDP_CAPITA_2010']) / gdp_change['GDP_CAPITA_2010'] * 100
+gdp_change = gdp_change.replace([np.inf, -np.inf], np.nan)
+
+top_state_gdp = (gdp_change
+    .loc[gdp_change['NAICS'] == '..0']
+    .sort_values(by='GDP_GROWTH', ascending=False)
+    .head(10)[['REGION_NAME','GDP_GROWTH']])
+
+top_state_capita = (gdp_change
+    .loc[gdp_change['NAICS'] == '..0']
+    .sort_values(by='CAPITA_GROWTH', ascending=False)
+    .head(10)[['REGION_NAME','CAPITA_GROWTH']])
+```
+
+```{python}
+#| label: fig-state-growth-chart
+#| echo: false
+#| fig-width: 14
+#| fig-height: 6
+#| fig-align: center
+#| out-width: 100%
+
+fig, axes = plt.subplots(1, 2, figsize=(15, 6), constrained_layout=True)
+
+for ax, data, metric, title, color in [
+    (axes[0], top_state_gdp, 'GDP_GROWTH', 'Nominal GDP growth', COLORS[0]),
+    (axes[1], top_state_capita, 'CAPITA_GROWTH', 'GDP-per-capita growth', COLORS[1]),
+]:
+    plot_data = data.sort_values(metric)
+    bars = ax.barh(plot_data['REGION_NAME'], plot_data[metric], color=color)
+    ax.bar_label(bars, labels=[f'{value:.1f}%' for value in plot_data[metric]], padding=4, fontsize=9)
+    ax.set_title(title)
+    ax.set_xlabel('Growth (%)')
+    ax.set_ylabel('')
+    ax.grid(axis='y', visible=False)
+    ax.margins(x=0.14)
+
+fig.suptitle(f'State GDP growth leaders, {START_YEAR}–{END_YEAR}', fontsize=16, fontweight='bold')
+plt.show()
+```
+
+Utah led both rankings, with nominal GDP growth of 153.2% and GDP-per-capita growth of 100.6%. Washington was a close second in per-capita growth, at 100.3%.
+
+## 2. Industry growth
+
+To understand what's behind this, the following charts move from broad sector groups to sectors and subsectors, then show where the fastest-growing sectors expanded most. 
+
+```{python}
+#| label: industry-growth-query
+#| echo: true
+#| fig-width: 11
+#| fig-height: 6
+#| fig-align: center
+#| out-width: 100%
+
+naics_change = (gdp_change
+    .groupby('NAICS_LDESC')[['GDP_2010','GDP_CAPITA_2010','GDP_2024','GDP_CAPITA_2024']].sum()
+    .reset_index())
+naics_change_reg = (gdp_change
+    .groupby(['REGION_NAME','STATE/REGION','NAICS_LDESC'])[['GDP_2010','GDP_CAPITA_2010','GDP_2024','GDP_CAPITA_2024']].sum()
+    .reset_index())
+
+naics_change['GDP_GROWTH'] = (naics_change['GDP_2024'] - naics_change['GDP_2010']) / naics_change['GDP_2010'] * 100
+naics_change['CAPITA_GROWTH'] = (naics_change['GDP_CAPITA_2024'] - naics_change['GDP_CAPITA_2010']) / naics_change['GDP_CAPITA_2010'] * 100
+naics_change_reg['GDP_GROWTH'] = (naics_change_reg['GDP_2024'] - naics_change_reg['GDP_2010']) / naics_change_reg['GDP_2010'] * 100
+naics_change_reg['CAPITA_GROWTH'] = (naics_change_reg['GDP_CAPITA_2024'] - naics_change_reg['GDP_CAPITA_2010']) / naics_change_reg['GDP_CAPITA_2010'] * 100
+
+naics_change['LEVEL'] = naics_change['NAICS_LDESC'].map(level_map)
+naics_change_reg['LEVEL'] = naics_change_reg['NAICS_LDESC'].map(level_map)
+naics_change_reg['BEA_REGION'] = naics_change_reg['STATE/REGION'].map(bea_regions)
+```
+
+
+### Broad sector-group growth
+
+The broadest industry view shows which combined sector groups produced the strongest nominal GDP growth.
+
+*For reference: Trade combines wholesale and retail trade; Manufacturing and information includes manufacturing plus digital knowledge and communication industries.*
+
+```{python}
+#| label: fig-sector-group-chart
+#| echo: false
+#| fig-width: 11
+#| fig-height: 6
+#| fig-align: center
+#| out-width: 100%
+
+sector_group_growth = (naics_change
+    .loc[(naics_change['LEVEL'] == 0)
+         & (naics_change['NAICS_LDESC'] != 'Nondurable goods manufacturing')
+         & (naics_change['NAICS_LDESC'] != 'Durable goods manufacturing')]
+    .sort_values(by='GDP_GROWTH', ascending=False)
+    .head(10)[['NAICS_LDESC','GDP_GROWTH']])
+
+plot_data = sector_group_growth.sort_values('GDP_GROWTH')
+fig, ax = plt.subplots(figsize=(11, 6))
+bars = ax.barh(plot_data['NAICS_LDESC'], plot_data['GDP_GROWTH'], color=COLORS[2])
+ax.bar_label(bars, labels=[f'{value:.1f}%' for value in plot_data['GDP_GROWTH']], padding=4, fontsize=9)
+ax.set_title(f'GDP growth by broad sector group, 2010–2024')
+ax.set_xlabel('Growth (%)')
+ax.set_ylabel('')
+ax.grid(axis='y', visible=False)
+ax.margins(x=0.15)
+plt.tight_layout()
+plt.show()
+```
+
+Arts, entertainment, recreation, accommodation, and food services recorded the strongest nominal GDP growth, increasing 131.4%. Professional and business services ranked second, at 115.5%.
+
+### Sector and subsector growth per capita
+
+The next figure ranks the five fastest-growing sectors and ten fastest-growing subsectors nationwide by GDP-per-capita growth.
+
+```{python}
+#| label: fig-sector-subsector-chart
+#| echo: false
+#| fig-width: 13
+#| fig-height: 13
+#| fig-align: center
+#| out-width: 100%
+
+top_sector_capita = (naics_change
+    .loc[naics_change['LEVEL'] == 2]
+    .sort_values(by='CAPITA_GROWTH', ascending=False)
+    .head(5)[['NAICS_LDESC','CAPITA_GROWTH']])
+
+top_subsector_capita = (naics_change
+    .loc[naics_change['LEVEL'] == 3]
+    .sort_values(by='CAPITA_GROWTH', ascending=False)
+    .head(10)[['NAICS_LDESC','CAPITA_GROWTH']])
+
+fig, axes = plt.subplots(2, 1, figsize=(13, 13), constrained_layout=True)
+
+for ax, data, title, color in [
+    (axes[0], top_sector_capita, 'Top 5 sectors', COLORS[0]),
+    (axes[1], top_subsector_capita, 'Top 10 subsectors', COLORS[4]),
+]:
+    plot_data = data.sort_values('CAPITA_GROWTH')
+    bars = ax.barh(plot_data['NAICS_LDESC'], plot_data['CAPITA_GROWTH'], color=color)
+    ax.bar_label(bars, labels=[f'{value:.1f}%' for value in plot_data['CAPITA_GROWTH']], padding=4, fontsize=8)
+    ax.set_title(title)
+    ax.set_xlabel('GDP-per-capita growth (%)')
+    ax.set_ylabel('')
+    ax.grid(axis='y', visible=False)
+    ax.margins(x=0.16)
+
+fig.suptitle(f'Fastest-growing sectors and subsectors, 2010–2024', fontsize=16, fontweight='bold')
+plt.show()
+```
+
+The top subsectors revealed the most interesting results. Given the recent growth of AI companies in the last five years (as of 2026), the highest growth was still in AI related subsectors as of the last year in this data (2024).
+
+### State leaders within the five fastest-growing sectors
+
+Using the five leading sectors from the previous figure, each panel ranks the ten states with the strongest per-capita growth in that sector.
+
+```{python}
+#| label: fig-selected-sectors-chart
+#| echo: false
+#| fig-width: 16
+#| fig-height: 19
+#| fig-align: center
+#| out-width: 100%
+
+selected_sectors = top_sector_capita['NAICS_LDESC'].tolist()
+
+fig, axes = plt.subplots(3, 2, figsize=(16, 19), constrained_layout=True)
+axes = axes.ravel()
+
+for index, sector in enumerate(selected_sectors):
+    plot_data = (naics_change_reg
+        .loc[(naics_change_reg['LEVEL'] == 2) & (naics_change_reg['NAICS_LDESC'] == sector)]
+        .sort_values(by='CAPITA_GROWTH', ascending=False)
+        .head(10)[['REGION_NAME','NAICS_LDESC','CAPITA_GROWTH']]
+        .sort_values('CAPITA_GROWTH'))
+
+    ax = axes[index]
+    bars = ax.barh(plot_data['REGION_NAME'], plot_data['CAPITA_GROWTH'], color=COLORS[index])
+    ax.bar_label(bars, labels=[f'{value:.1f}%' for value in plot_data['CAPITA_GROWTH']], padding=3, fontsize=8)
+    ax.set_title(sector)
+    ax.set_xlabel('GDP-per-capita growth (%)')
+    ax.set_ylabel('')
+    ax.grid(axis='y', visible=False)
+    ax.margins(x=0.17)
+
+axes[-1].axis('off')
+fig.suptitle(
+    f'State leaders within the five fastest-growing sectors, 2010–2024',
+    fontsize=16,
+    fontweight='bold',
+)
+plt.show()
+```
+
+## 3. Growth contribution
+
+To estimate how industries contributed to overall growth, each sector's prior-year share of state GDP is multiplied by its year-over-year growth rate. The resulting measure approximates the percentage points each sector contributed to state GDP growth.
+
+$$
+\text{Growth contribution}_{i,t}
+= \text{GDP share}_{i,t-1} \times \text{Industry growth rate}_{i,t}
+$$
+
+*Because 2010 has no prior-year observation, the contribution analysis covers 2011–2024.*
+
+```{python}
+#| label: contribution-query
+#| echo: true
+#| fig-width: 11
+#| fig-height: 7
+#| fig-align: center
+#| out-width: 100%
+
+gdp_df = gdp_df.sort_values(by=['STATE/REGION','NAICS','YEAR']).reset_index(drop=True)
+
+gdp_df['YoY CHANGE'] = gdp_df.groupby(['STATE/REGION','NAICS'])['GDP'].pct_change(fill_method=None) * 100
+gdp_df['GDP_SHARE'] = gdp_df['GDP'] / gdp_df['OVERALL_GDP']
+gdp_df['GDP_SHARE_PY'] = gdp_df.groupby(['STATE/REGION','NAICS'])['GDP_SHARE'].shift(1)
+gdp_df['GROWTH_CONTRIBUTION'] = gdp_df['GDP_SHARE_PY'] * gdp_df['YoY CHANGE']
+
+sector_contribution = (gdp_df
+    .loc[(gdp_df['LEVEL'] == 2) & gdp_df['YEAR'].between(2011, 2024)]
+    .groupby(['NAICS_LDESC'])['GROWTH_CONTRIBUTION']
+    .sum()
+    .reset_index()
+    .sort_values(by='GROWTH_CONTRIBUTION', ascending=False))
+```
+
+```{python}
+#| label: fig-national-contribution-chart
+#| echo: false
+#| fig-width: 11
+#| fig-height: 7
+#| fig-align: center
+#| out-width: 100%
+
+plot_data = sector_contribution.head(10).sort_values('GROWTH_CONTRIBUTION')
+fig, ax = plt.subplots(figsize=(11, 7))
+bars = ax.barh(plot_data['NAICS_LDESC'], plot_data['GROWTH_CONTRIBUTION'], color=COLORS[0])
+ax.bar_label(bars, labels=[f'{value:.1f} pp' for value in plot_data['GROWTH_CONTRIBUTION']], padding=4, fontsize=8)
+ax.set_title(f'Top sector contributions to overall GDP growth, 2011–2024')
+ax.set_xlabel('Cumulative growth contribution (percentage-point sum across states and years)')
+ax.set_ylabel('')
+ax.grid(axis='y', visible=False)
+ax.margins(x=0.18)
+plt.tight_layout()
+plt.show()
+```
+
+These totals aggregate contributions to state economies across multiple years; they rank sectors' relative influence but do not represent a single national GDP growth rate.
+
+### How contribution varies by BEA region
+
+This heatmap compares the contributions of the 12 leading national sectors across the eight BEA regions.
+
+*For both heatmaps, compare sectors across each row to identify the strongest contributors within a region or state. Values sum annual percentage-point contributions from 2011–2024 and should not be interpreted as standalone growth rates or used to rank economies.*
+
+```{python}
+#| label: fig-regional-contribution-chart
+#| echo: false
+#| fig-width: 16
+#| fig-height: 6
+#| fig-align: center
+#| out-width: 100%
+
+top_contribution_sectors = sector_contribution.head(12)['NAICS_LDESC'].tolist()
+regional_contribution = (gdp_df
+    .loc[(gdp_df['LEVEL'] == 2)
+         & gdp_df['YEAR'].between(2011, 2024)
+         & gdp_df['NAICS_LDESC'].isin(top_contribution_sectors)]
+    .groupby(['BEA_REGION','NAICS_LDESC'])['GROWTH_CONTRIBUTION']
+    .sum()
+    .reset_index())
+
+regional_heatmap = (regional_contribution
+    .pivot(index='BEA_REGION', columns='NAICS_LDESC', values='GROWTH_CONTRIBUTION')
+    .reindex(columns=top_contribution_sectors))
+
+fig, ax = plt.subplots(figsize=(16, 6))
+sns.heatmap(
+    regional_heatmap,
+    cmap='YlGnBu',
+    annot=True,
+    fmt='.1f',
+    linewidths=0,
+    annot_kws={'fontsize': 8},
+    cbar_kws={'label': 'GDP growth contribution (pp sum)'},
+    ax=ax,
+)
+ax.vlines(
+    np.arange(1, regional_heatmap.shape[1]),
+    *ax.get_ylim(),
+    colors='#3f4f5f',
+    linestyles='--',
+    linewidth=0.8,
+    alpha=0.75,
+)
+ax.hlines(
+    np.arange(1, regional_heatmap.shape[0] + 1),
+    *ax.get_xlim(),
+    colors='black',
+    linewidth=2,
+)
+ax.set_title(f'Regional contribution of the top 12 national sectors, 2011–2024 (according to BEA Regions)')
+ax.set_xlabel('')
+ax.set_ylabel('')
+ax.tick_params(axis='x', rotation=45)
+for label in ax.get_xticklabels():
+    label.set_horizontalalignment('right')
+plt.tight_layout()
+plt.show()
+```
+
+### What drove growth in the leading per-capita states?
+
+This heatmap compares the same 12 sectors across the ten states with the strongest GDP-per-capita growth.
+
+```{python}
+#| label: fig-state-contribution-chart
+#| echo: false
+#| fig-width: 16
+#| fig-height: 7
+#| fig-align: center
+#| out-width: 100%
+
+top_capita_states = top_state_capita['REGION_NAME'].tolist()
+state_contribution = (gdp_df
+    .loc[(gdp_df['LEVEL'] == 2)
+         & gdp_df['YEAR'].between(2011, 2024)
+         & gdp_df['REGION_NAME'].isin(top_capita_states)
+         & gdp_df['NAICS_LDESC'].isin(top_contribution_sectors)]
+    .groupby(['REGION_NAME','NAICS_LDESC'])['GROWTH_CONTRIBUTION']
+    .sum()
+    .reset_index())
+
+state_heatmap = (state_contribution
+    .pivot(index='REGION_NAME', columns='NAICS_LDESC', values='GROWTH_CONTRIBUTION')
+    .reindex(index=top_capita_states, columns=top_contribution_sectors))
+
+fig, ax = plt.subplots(figsize=(16, 7))
+sns.heatmap(
+    state_heatmap,
+    cmap='YlGnBu',
+    annot=True,
+    fmt='.1f',
+    linewidths=0,
+    annot_kws={'fontsize': 8},
+    cbar_kws={'label': 'GDP growth contribution (pp sum)'},
+    ax=ax,
+)
+ax.vlines(
+    np.arange(1, state_heatmap.shape[1]),
+    *ax.get_ylim(),
+    colors='#3f4f5f',
+    linestyles='--',
+    linewidth=0.8,
+    alpha=0.75,
+)
+ax.hlines(
+    np.arange(1, state_heatmap.shape[0] + 1),
+    *ax.get_xlim(),
+    colors='black',
+    linewidth=2,
+)
+ax.set_title(f'State contribution of the top 12 national sectors, 2011–2024 (top states by GDP-per-capita growth)')
+ax.set_xlabel('')
+ax.set_ylabel('')
+ax.tick_params(axis='x', rotation=45)
+for label in ax.get_xticklabels():
+    label.set_horizontalalignment('right')
+plt.tight_layout()
+plt.show()
+```
+
+## 4. International trade
+
+To place domestic growth in an international context, this section examines state import and export data from the U.S. Census Bureau. The first comparison sums trade values by industry from 2010 through 2024.
+
+```{python}
+#| label: trade-setup
+#| include: false
+
+manufacturing_codes = {'31','32','33'}
+valid_states = set(gdp_df['STATE/REGION'].unique())
+```
+
+### Overall export and import value
+
+The chart below displays cumulative exports and imports on the same scale to compare both sector size and the balance between the two forms of trade.
+
+```{python}
+#| label: fig-trade-value-chart
+#| echo: false
+#| fig-width: 12
+#| fig-height: 7
+#| fig-align: center
+#| out-width: 100%
+
+export_value = (exports_df
+    .loc[(~exports_df['EXP_NAICS'].isin(manufacturing_codes))
+         & (exports_df['EXP_LEVEL'] == 2)
+         & exports_df['STATE/REGION'].isin(valid_states)
+         & exports_df['YEAR'].between(START_YEAR, END_YEAR)]
+    .groupby('EXP_NAICS_DESC')['EXPORT_VAL'].sum()
+    .reset_index()
+    .rename(columns={'EXP_NAICS_DESC':'TRADE_SECTOR'}))
+
+import_value = (imports_df
+    .loc[(~imports_df['IMP_NAICS'].isin(manufacturing_codes))
+         & (imports_df['IMP_LEVEL'] == 2)
+         & imports_df['STATE/REGION'].isin(valid_states)
+         & imports_df['YEAR'].between(START_YEAR, END_YEAR)]
+    .groupby('IMP_NAICS_DESC')['IMPORT_VAL'].sum()
+    .reset_index()
+    .rename(columns={'IMP_NAICS_DESC':'TRADE_SECTOR'}))
+
+trade_value = export_value.merge(import_value, on='TRADE_SECTOR', how='outer').fillna(0)
+trade_value[['EXPORT_VAL','IMPORT_VAL']] = trade_value[['EXPORT_VAL','IMPORT_VAL']] / 1_000_000_000_000
+trade_value['TOTAL_TRADE'] = trade_value['EXPORT_VAL'] + trade_value['IMPORT_VAL']
+trade_value['SECTOR_LABEL'] = trade_value['TRADE_SECTOR'].replace({
+    'GOODS RETURNED TO CANADA (EXPORTS ONLY); U.S. GOODS RETURNED AND REIMPORTED ITEMS (IMPORTS ONLY)': 'Returned / reimported goods',
+    'OTHER SPECIAL CLASSIFICATION PROVISIONS': 'Other special classifications',
+}).str.title()
+trade_value = trade_value.sort_values('TOTAL_TRADE').tail(8)
+
+y = np.arange(len(trade_value))
+height = 0.38
+fig, ax = plt.subplots(figsize=(12, 7))
+ax.barh(y - height / 2, trade_value['EXPORT_VAL'], height, label='Exports', color=COLORS[2])
+ax.barh(y + height / 2, trade_value['IMPORT_VAL'], height, label='Imports', color=COLORS[1])
+ax.set_yticks(y, trade_value['SECTOR_LABEL'])
+ax.set_title(f'Largest traded sectors, 2010–2024')
+ax.set_xlabel('Cumulative value (trillions of dollars)')
+ax.set_ylabel('')
+ax.legend(frameon=False)
+ax.grid(axis='y', visible=False)
+plt.tight_layout()
+plt.show()
+```
+
+Manufactured goods dominated both exports and imports, accounting for approximately $20.0 trillion in exports and $31.5 trillion in imports from 2010 through 2024.
+
+### How state trade exposure changed
+
+Trade exposure measures each state's exports or imports as a percentage of its total GDP. The KPIs below show that export exposure declined in a large majority of states. Among states where import exposure increased, the average rise was about 2 percentage points—a relatively modest shift.
+
+```{python}
+#| label: trade-exposure-query
+#| echo: true
+#| fig-width: 12
+#| fig-height: 4
+#| fig-align: center
+#| out-width: 100%
+
+export_change = (exports_df
+    .loc[(exports_df['YEAR'] == 2010) & (exports_df['EXP_LEVEL'] == 2) & (~exports_df['EXP_NAICS'].isin(manufacturing_codes))]
+    .drop(columns=['GDP_CODE'])
+    .groupby(['STATE/REGION','YEAR'])['EXPORT_VAL'].sum()
+    .reset_index()
+    .rename(columns={'EXPORT_VAL':'EXPORTS_2010'})
+    .drop(columns=['YEAR'])
+).merge((exports_df
+    .loc[(exports_df['YEAR'] == 2024) & (exports_df['EXP_LEVEL'] == 2) & (~exports_df['EXP_NAICS'].isin(manufacturing_codes))]
+    .drop(columns=['GDP_CODE'])
+    .groupby(['STATE/REGION','YEAR'])['EXPORT_VAL'].sum()
+    .reset_index()
+    .rename(columns={'EXPORT_VAL':'EXPORTS_2024'})
+    .drop(columns=['YEAR'])
+), on=['STATE/REGION'])
+
+export_change = (export_change
+    .merge(gdp_change.loc[gdp_change['NAICS'] == '..0'][['STATE/REGION','REGION_NAME','GDP_2010','GDP_2024']], on=['STATE/REGION']))
+export_change['EXPORT_2010_EXP'] = export_change['EXPORTS_2010'] / export_change['GDP_2010'] * 100
+export_change['EXPORT_2024_EXP'] = export_change['EXPORTS_2024'] / export_change['GDP_2024'] * 100
+export_change['EXP_GROWTH_PP'] = export_change['EXPORT_2024_EXP'] - export_change['EXPORT_2010_EXP']
+
+import_change = (imports_df
+    .loc[(imports_df['YEAR'] == 2010) & (imports_df['IMP_LEVEL'] == 2) & (~imports_df['IMP_NAICS'].isin(manufacturing_codes))]
+    .drop(columns=['GDP_CODE'])
+    .groupby(['STATE/REGION','YEAR'])['IMPORT_VAL'].sum()
+    .reset_index()
+    .rename(columns={'IMPORT_VAL':'IMPORTS_2010'})
+    .drop(columns=['YEAR'])
+).merge((imports_df
+    .loc[(imports_df['YEAR'] == 2024) & (imports_df['IMP_LEVEL'] == 2) & (~imports_df['IMP_NAICS'].isin(manufacturing_codes))]
+    .drop(columns=['GDP_CODE'])
+    .groupby(['STATE/REGION','YEAR'])['IMPORT_VAL'].sum()
+    .reset_index()
+    .rename(columns={'IMPORT_VAL':'IMPORTS_2024'})
+    .drop(columns=['YEAR'])
+), on=['STATE/REGION'])
+
+import_change = (import_change
+    .merge(gdp_change.loc[gdp_change['NAICS'] == '..0'][['STATE/REGION','REGION_NAME','GDP_2010','GDP_2024']], on=['STATE/REGION']))
+import_change['IMPORT_2010_EXP'] = import_change['IMPORTS_2010'] / import_change['GDP_2010'] * 100
+import_change['IMPORT_2024_EXP'] = import_change['IMPORTS_2024'] / import_change['GDP_2024'] * 100
+import_change['IMP_GROWTH_PP'] = import_change['IMPORT_2024_EXP'] - import_change['IMPORT_2010_EXP']
+
+negative_export_share = (export_change['EXP_GROWTH_PP'] < 0).mean() * 100
+positive_import_states = import_change.loc[import_change['IMP_GROWTH_PP'] > 0]
+average_positive_import_growth = positive_import_states['IMP_GROWTH_PP'].mean()
+```
+
+```{python}
+#| label: fig-trade-exposure-kpis
+#| echo: false
+#| fig-width: 12
+#| fig-height: 4
+#| fig-align: center
+#| out-width: 100%
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4), constrained_layout=True)
+
+kpis = [
+    (
+        axes[0],
+        f'{negative_export_share:.1f}%',
+        'States with declining export exposure',
+        f'Exports represented a smaller share of GDP in {END_YEAR} than in {START_YEAR}',
+        COLORS[0],
+    ),
+    (
+        axes[1],
+        f'+{average_positive_import_growth:.1f} pp',
+        'Average increase among states with rising import exposure',
+        f'{len(positive_import_states)} of {len(import_change)} states/D.C. recorded an increase',
+        COLORS[1],
+    ),
+]
+
+for ax, value, label, detail, color in kpis:
+    ax.axis('off')
+    ax.text(0.5, 0.65, value, ha='center', va='center', fontsize=30, fontweight='bold', color=color)
+    ax.text(0.5, 0.40, label, ha='center', va='center', fontsize=12, fontweight='bold', wrap=True)
+    ax.text(0.5, 0.20, detail, ha='center', va='center', fontsize=10, color='dimgray', wrap=True)
+
+fig.suptitle(f'Change in state trade exposure, 2010–2024', fontsize=16, fontweight='bold')
+plt.show()
+```
+
+### Which trade sectors grew fastest?
+
+The final trade comparison ranks export and import sectors by their percentage growth between 2010 and 2024. The two charts use independent scales as the leading export and import growth rates differ substantially.
+
+```{python}
+#| label: trade-sector-growth-query
+#| echo: true
+#| fig-width: 16
+#| fig-height: 7
+#| fig-align: center
+#| out-width: 100%
+
+export_change_sec = (exports_df
+    .loc[(exports_df['YEAR'] == 2010) & (exports_df['EXP_LEVEL'] == 2) & (~exports_df['EXP_NAICS'].isin(manufacturing_codes))]
+    .drop(columns=['GDP_CODE','EXP_LEVEL'])
+    .groupby(['EXP_NAICS_DESC','YEAR'])['EXPORT_VAL'].sum()
+    .reset_index()
+    .rename(columns={'EXPORT_VAL':'EXPORTS_2010'})
+    .drop(columns=['YEAR'])
+).merge((exports_df
+    .loc[(exports_df['YEAR'] == 2024) & (exports_df['EXP_LEVEL'] == 2) & (~exports_df['EXP_NAICS'].isin(manufacturing_codes))]
+    .drop(columns=['GDP_CODE','EXP_LEVEL'])
+    .groupby(['EXP_NAICS_DESC','YEAR'])['EXPORT_VAL'].sum()
+    .reset_index()
+    .rename(columns={'EXPORT_VAL':'EXPORTS_2024'})
+    .drop(columns=['YEAR'])
+), on=['EXP_NAICS_DESC'])
+
+import_change_sec = (imports_df
+    .loc[(imports_df['YEAR'] == 2010) & (imports_df['IMP_LEVEL'] == 2) & (~imports_df['IMP_NAICS'].isin(manufacturing_codes))]
+    .drop(columns=['GDP_CODE','IMP_LEVEL'])
+    .groupby(['IMP_NAICS_DESC','YEAR'])['IMPORT_VAL'].sum()
+    .reset_index()
+    .rename(columns={'IMPORT_VAL':'IMPORTS_2010'})
+    .drop(columns=['YEAR'])
+).merge((imports_df
+    .loc[(imports_df['YEAR'] == 2024) & (imports_df['IMP_LEVEL'] == 2) & (~imports_df['IMP_NAICS'].isin(manufacturing_codes))]
+    .drop(columns=['GDP_CODE','IMP_LEVEL'])
+    .groupby(['IMP_NAICS_DESC','YEAR'])['IMPORT_VAL'].sum()
+    .reset_index()
+    .rename(columns={'IMPORT_VAL':'IMPORTS_2024'})
+    .drop(columns=['YEAR'])
+), on=['IMP_NAICS_DESC'])
+
+export_change_sec['EXP_SECT_GROWTH'] = (export_change_sec['EXPORTS_2024'] - export_change_sec['EXPORTS_2010']) / export_change_sec['EXPORTS_2010'] * 100
+import_change_sec['IMP_SECT_GROWTH'] = (import_change_sec['IMPORTS_2024'] - import_change_sec['IMPORTS_2010']) / import_change_sec['IMPORTS_2010'] * 100
+
+top_export_growth = export_change_sec.sort_values(by='EXP_SECT_GROWTH', ascending=False).head(5)
+top_import_growth = import_change_sec.sort_values(by='IMP_SECT_GROWTH', ascending=False).head(5)
+```
+
+```{python}
+#| label: fig-trade-sector-growth-chart
+#| echo: false
+#| fig-width: 16
+#| fig-height: 7
+#| fig-align: center
+#| out-width: 100%
+
+fig, axes = plt.subplots(1, 2, figsize=(16, 7), constrained_layout=True)
+
+for ax, data, label_col, metric, title, color in [
+    (axes[0], top_export_growth, 'EXP_NAICS_DESC', 'EXP_SECT_GROWTH', 'Top 5 export-sector growth rates', COLORS[2]),
+    (axes[1], top_import_growth, 'IMP_NAICS_DESC', 'IMP_SECT_GROWTH', 'Top 5 import-sector growth rates', COLORS[1]),
+]:
+    plot_data = data.sort_values(metric)
+    labels = plot_data[label_col].replace({
+        'GOODS RETURNED TO CANADA (EXPORTS ONLY); U.S. GOODS RETURNED AND REIMPORTED ITEMS (IMPORTS ONLY)': 'Returned / reimported goods',
+        'OTHER SPECIAL CLASSIFICATION PROVISIONS': 'Other special classifications',
+    }).str.title()
+    bars = ax.barh(labels, plot_data[metric], color=color)
+    ax.bar_label(bars, labels=[f'{value:.1f}%' for value in plot_data[metric]], padding=4, fontsize=9)
+    ax.set_title(title)
+    ax.set_xlabel(f'Growth (%)')
+    ax.set_ylabel('')
+    ax.grid(axis='y', visible=False)
+    ax.margins(x=0.18)
+
+fig.suptitle('Fastest-growing international trade categories 2010-2024', fontsize=16, fontweight='bold')
+plt.show()
+```
+
+Oil, gas, minerals, and ores was the fastest-growing export sector, rising 669.8%. Among imports, used or second-hand merchandise and returned or reimported goods recorded the two largest percentage increases, at 153.3% and 147.3%, respectively. These rankings reflect percentage growth rather than total trade value.
+
+## 5. Tennessee
+
+Tennessee ranked among the top ten states in both total GDP growth and GDP-per-capita growth. This section identifies the sectors where Tennessee was a top-five state nationally and shows how broad sector groups contributed to its year-over-year GDP growth.
+
+```{python}
+#| label: fig-tennessee-rank-kpis
+#| echo: false
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| out-width: 100%
+
+gdp_change['NATIONAL_RANK'] = gdp_change.groupby('NAICS_LDESC')['CAPITA_GROWTH'].rank(method='min', ascending=False)
+
+tennessee_rankings = (gdp_change
+    .loc[(gdp_change['REGION_NAME'] == 'Tennessee')
+         & (gdp_change['LEVEL'] == 2)
+         & (gdp_change['NATIONAL_RANK'] <= 5)]
+    .sort_values('NATIONAL_RANK'))
+
+kpi_order = tennessee_rankings['NAICS_LDESC'].tolist()
+utilities_position = kpi_order.index('Utilities')
+arts_position = kpi_order.index('Arts, entertainment, and recreation')
+kpi_order[utilities_position], kpi_order[arts_position] = kpi_order[arts_position], kpi_order[utilities_position]
+tennessee_rankings = tennessee_rankings.set_index('NAICS_LDESC').loc[kpi_order].reset_index()
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 8), constrained_layout=True)
+axes = axes.ravel()
+
+for index, (_, row) in enumerate(tennessee_rankings.iterrows()):
+    ax = axes[index]
+    ax.axis('off')
+    ax.text(0.5, 0.68, f"#{int(row['NATIONAL_RANK'])}", ha='center', va='center', fontsize=30, fontweight='bold', color=COLORS[index])
+    ax.text(0.5, 0.42, row['NAICS_LDESC'], ha='center', va='center', fontsize=12, fontweight='bold', wrap=True)
+    ax.text(0.5, 0.20, f"{row['CAPITA_GROWTH']:.1f}% per-capita growth", ha='center', va='center', fontsize=11, color='dimgray')
+
+fig.suptitle(f'Tennessee sectors ranked in the national top five, {START_YEAR}–{END_YEAR}', fontsize=16, fontweight='bold')
+plt.show()
+```
+
+### Tennessee's growth-contribution timeline
+
+The stacked bars show how broad sector groups combined to produce Tennessee's annual GDP growth. Positive segments added to growth; negative segments offset it. Durable and nondurable manufacturing are excluded because they overlap the combined manufacturing-and-information group.
+
+```{python}
+#| label: fig-tennessee-contribution-chart
+#| echo: false
+#| fig-width: 14
+#| fig-height: 8
+#| fig-align: center
+#| out-width: 100%
+
+lvl_3_secgroups = ['Durable goods manufacturing','Nondurable goods manufacturing']
+tennessee_sector_groups = (gdp_df
+    .loc[(gdp_df['REGION_NAME'] == 'Tennessee')
+         & (gdp_df['LEVEL'] == 0)
+         & (~gdp_df['NAICS_LDESC'].isin(lvl_3_secgroups))
+         & gdp_df['YEAR'].between(START_YEAR + 1, END_YEAR)])
+
+tennessee_timeline = (tennessee_sector_groups
+    .pivot(index='YEAR', columns='NAICS_LDESC', values='GROWTH_CONTRIBUTION')
+    .fillna(0))
+
+ax = tennessee_timeline.plot(
+    kind='bar',
+    stacked=True,
+    figsize=(14, 8),
+    color=sns.color_palette('colorblind', n_colors=len(tennessee_timeline.columns)),
+    width=0.8,
+)
+ax.axhline(0, color='black', linewidth=0.8)
+ax.set_title(f'Tennessee annual GDP growth contribution by sector group, 2011–2024')
+ax.set_xlabel('')
+ax.set_ylabel('Contribution to GDP growth (percentage points)')
+ax.tick_params(axis='x', rotation=0)
+ax.grid(axis='x', visible=False)
+ax.legend(title='Sector Group', bbox_to_anchor=(0.5, -0.20), loc='upper center', ncol=2, frameon=False)
+plt.tight_layout()
+plt.show()
+```
+
+After 2020, finance, insurance, real estate, rental, and leasing was Tennessee's most consistent source of growth, contributing approximately 1.4 to 1.9 percentage points annually through 2024. Arts, entertainment, recreation, accommodation, and food services also rebounded sharply from its 2020 decline. Its average contribution during 2021–2024 was roughly three times its pre-2020 average.
+
+::: {.source-note}
+**Sources:** U.S. Bureau of Economic Analysis state GDP data and U.S. Census Bureau state import and export data, using the prepared project files in this repository.
+:::

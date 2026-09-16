@@ -1,0 +1,38 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Statewide Economics"
+  navbar:
+    background: "#0c213a"
+    foreground: "#ffffff"
+    left:
+      - href: index.qmd
+        text: Analysis
+    right:
+      - href: https://github.com/buterabuilds/statewide-economics
+        text: GitHub
+  page-footer:
+    left: "© 2026 Matthew Butera"
+    right: "Built with Quarto"
+
+format:
+  html:
+    theme: [cosmo, styles.scss]
+    include-in-header:
+      - includes/mobile-viewport.html
+    toc: true
+    toc-location: left
+    toc-title: "On this page"
+    smooth-scroll: true
+    code-fold: true
+    code-summary: "Show code"
+    code-tools: true
+    anchor-sections: true
+
+execute:
+  freeze: auto
+  echo: false
+  warning: false
+  message: false
