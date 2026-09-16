@@ -831,6 +831,10 @@ plt.show()
 
 After 2020, finance, insurance, real estate, rental, and leasing was Tennessee's most consistent source of growth, contributing approximately 1.4 to 1.9 percentage points annually through 2024. Arts, entertainment, recreation, accommodation, and food services also rebounded sharply from its 2020 decline. Its average contribution during 2021–2024 was roughly three times its pre-2020 average.
 
+::: {.tableau-cta}
+To see more detail and explore how economic growth changed by state, industry, and year, use the [interactive Tableau dashboard](https://public.tableau.com/views/dashboard_final_17895298449870/Overview?:showVizHome=no).
+:::
+
 ::: {.source-note}
 **Sources:** U.S. Bureau of Economic Analysis state GDP data and U.S. Census Bureau state import and export data, using the prepared project files in this repository.
 :::

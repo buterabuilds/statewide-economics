@@ -408,6 +408,24 @@ header#title-block-header {
   border-top: 1px solid var(--line);
 }
 
+.tableau-cta {
+  margin-top: 2.5rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--teal);
+  background: var(--cyan);
+  box-shadow: 0 8px 24px rgba(16, 36, 62, 0.06);
+  font-size: 1.05rem;
+}
+
+.tableau-cta p {
+  margin: 0;
+}
+
+.tableau-cta a {
+  font-weight: 750;
+}
+
 @media (min-width: 1051px) {
   // Quarto places a left-positioned TOC in #quarto-sidebar (not the
   // otherwise-empty margin sidebar). Remove the page-column grid so it does

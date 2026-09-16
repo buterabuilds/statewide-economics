@@ -10,9 +10,12 @@ website:
     left:
       - href: index.qmd
         text: Analysis
+      - href: https://public.tableau.com/views/dashboard_final_17895298449870/Overview?:showVizHome=no
+        text: Tableau Dashboard
     right:
       - href: https://github.com/buterabuilds/statewide-economics
-        text: GitHub
+        icon: github
+        aria-label: GitHub
   page-footer:
     left: "© 2026 Matthew Butera"
     right: "Built with Quarto"
