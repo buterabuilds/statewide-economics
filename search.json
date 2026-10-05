@@ -40,5 +40,131 @@
     "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
     "section": "5. Tennessee",
     "text": "5. Tennessee\nTennessee ranked among the top ten states in both total GDP growth and GDP-per-capita growth. This section identifies the sectors where Tennessee was a top-five state nationally and shows how broad sector groups contributed to its year-over-year GDP growth.\n\n\n\n\n\n\n\n\nFigure 11\n\n\n\n\n\n\nTennessee’s growth-contribution timeline\nThe stacked bars show how broad sector groups combined to produce Tennessee’s annual GDP growth. Positive segments added to growth; negative segments offset it. Durable and nondurable manufacturing are excluded because they overlap the combined manufacturing-and-information group.\n\n\n\n\n\n\n\n\nFigure 12\n\n\n\n\n\nAfter 2020, finance, insurance, real estate, rental, and leasing was Tennessee’s most consistent source of growth, contributing approximately 1.4 to 1.9 percentage points annually through 2024. Arts, entertainment, recreation, accommodation, and food services also rebounded sharply from its 2020 decline. Its average contribution during 2021–2024 was roughly three times its pre-2020 average.\n\nTo see more detail and explore how economic growth changed by state, industry, and year, use the interactive Tableau dashboard.\n\n\nSources: U.S. Bureau of Economic Analysis state GDP data and U.S. Census Bureau state import and export data, using the prepared project files in this repository."
+  },
+  {
+    "objectID": "slides.html#study-scope",
+    "href": "slides.html#study-scope",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Study scope",
+    "text": "Study scope\n\n\n\n\n\nMotivation\nNashville experienced significant growth in the years following the pandemic.\nWitnessing this raises the question whether our experience was unique, or whether this growth was reflected nationally.\nQuestions\nWhich states sustained the strongest economic growth?\nWhich industries drove the change? How does international trade shape the picture?\n\n\nStudy period 2010–2024\n\nData sources\nBureau of Economic Analysis\nGDP by State and NAICS\nU.S. Census Bureau\nInternational Trade Data by State and NAICS"
+  },
+  {
+    "objectID": "slides.html#utah-led-both-state-growth-rankings",
+    "href": "slides.html#utah-led-both-state-growth-rankings",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Utah led both state growth rankings",
+    "text": "Utah led both state growth rankings\n\n\nUtah grew 153.2% in nominal GDP and 100.6% per capita. Tennessee ranked in the top ten on both measures.\n\n\nThe ranking changes when population is considered, but Utah remains first. Washington ranks second in both measures. Tennessee ranks ninth in nominal growth and sixth in per-capita growth."
+  },
+  {
+    "objectID": "slides.html#leisure-and-hospitality-led-broad-sector-growth",
+    "href": "slides.html#leisure-and-hospitality-led-broad-sector-growth",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Leisure and hospitality led broad sector growth",
+    "text": "Leisure and hospitality led broad sector growth\n\n\nArts, entertainment, recreation, accommodation, and food services grew 131.4%. Professional and business services ranked second at 115.5%.\n\n\nThis broad grouping combines several related industries. The more detailed sector analysis shows construction and accommodation and food services leading per-capita growth. At the subsector level, funds and financial vehicles grew far faster than the rest, followed by data processing and hosting."
+  },
+  {
+    "objectID": "slides.html#real-estate-was-the-largest-cumulative-contributor",
+    "href": "slides.html#real-estate-was-the-largest-cumulative-contributor",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Real estate was the largest cumulative contributor",
+    "text": "Real estate was the largest cumulative contributor\n\n\nThese values sum annual percentage-point contributions across states and years. They rank relative influence, not a single national GDP growth rate.\n\n\nGrowth contribution multiplies each sector’s prior-year share of state GDP by its year-over-year growth rate. Real estate and rental and leasing has the largest cumulative total. Government, finance and insurance, health care, manufacturing, and professional services form the next group."
+  },
+  {
+    "objectID": "slides.html#growth-drivers-differ-by-region",
+    "href": "slides.html#growth-drivers-differ-by-region",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Growth drivers differ by region",
+    "text": "Growth drivers differ by region\n\n\nReal estate contributes strongly across regions, while manufacturing carries more weight in the Great Lakes, Plains, and Southeast."
+  },
+  {
+    "objectID": "slides.html#manufactured-goods-dominate-international-trade",
+    "href": "slides.html#manufactured-goods-dominate-international-trade",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Manufactured goods dominate international trade",
+    "text": "Manufactured goods dominate international trade\n\n\nManufactured goods accounted for about $20.0 trillion in exports and $31.5 trillion in imports during the period."
+  },
+  {
+    "objectID": "slides.html#tennessees-sector-strengths",
+    "href": "slides.html#tennessees-sector-strengths",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Tennessee’s sector strengths",
+    "text": "Tennessee’s sector strengths\n\n\nTennessee ranked first nationally in accommodation and food services growth. It ranked third in arts, entertainment, and recreation and utilities, and fourth in retail trade. These rankings use GDP-per-capita growth from 2010 to 2024."
+  },
+  {
+    "objectID": "slides.html#tennessees-growth-mix-shifted-after-2020",
+    "href": "slides.html#tennessees-growth-mix-shifted-after-2020",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Tennessee’s growth mix shifted after 2020",
+    "text": "Tennessee’s growth mix shifted after 2020\n\n\nFinance, insurance, real estate, rental, and leasing became Tennessee’s most consistent post-2020 contributor. Leisure-related activity also rebounded sharply.\n\n\nThe 2020 decline is followed by an unusually strong 2021 rebound. From 2021 through 2024, finance, insurance, real estate, rental, and leasing contributed about 1.4 to 1.9 percentage points per year. Leisure-related activity averaged roughly three times its pre-2020 contribution during 2021 through 2024."
+  },
+  {
+    "objectID": "slides.html#explore-the-results",
+    "href": "slides.html#explore-the-results",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Explore the results",
+    "text": "Explore the results\n\n\n\n\nThe interactive dashboard lets you compare economic change by state, industry, and year.\n\n\nOpen the Tableau dashboard"
+  },
+  {
+    "objectID": "slides.html#test",
+    "href": "slides.html#test",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Test",
+    "text": "Test"
+  },
+  {
+    "objectID": "slides.html#exploring-the-data",
+    "href": "slides.html#exploring-the-data",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Exploring the data",
+    "text": "Exploring the data\n\n\n\n\n\nBroad Sector Groups\nProduction & Goods Sectors\n\n11 & 21 - Natural Resources and Mining\n31-33 & 51 - Manufacturing & Information\n22 & 48-49 - Infrastructure & Logistics\n\nCommerce & Asset Management\n\n42 & 44-45 - Wholesale & Retail Trade\n52 & 53 - FIRE\n\nProfessional & Social Services\n\n54-56 - Corporate & Professional Services\n61 & 62 - Education & Healthcare\n71 & 72 - Leisure & Hospitality\n\n\nMeasures\n\n\nNominal GDPEconomic output in current dollars\n\n\nGDP per capitaOutput adjusted for population\n\n\nGrowth Contribution\n\n\\[\n\\text{Growth contribution}_{i,t} = \\text{GDP share}_{i,t-1} \\times \\text{Industry growth rate}_{i,t}\n\\]\n\n\nThis metric estimates how much each industry adds to annual GDP growth.\n\nNAICS industry hierarchy\n\n\n2-digitSectorBroad industry group\n\n\n3-digitSubsector\n\n\n4-digitIndustry group\n\n\n5-digitNAICS industry\n\n\n6-digitNational industryMost detailed classification"
+  },
+  {
+    "objectID": "slides.html#leisure-and-hospitality-led-broad-sector-group-growth",
+    "href": "slides.html#leisure-and-hospitality-led-broad-sector-group-growth",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Leisure and hospitality led broad sector group growth",
+    "text": "Leisure and hospitality led broad sector group growth\n\n\nArts, entertainment, recreation, accommodation, and food services grew 131.4%. Professional and business services ranked second at 115.5%."
+  },
+  {
+    "objectID": "slides.html#leading-sector-and-subsector-growth-per-capita",
+    "href": "slides.html#leading-sector-and-subsector-growth-per-capita",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Leading sector and subsector growth per capita",
+    "text": "Leading sector and subsector growth per capita\n\n\nConstruction (114.5%) and accommodation and food services (113.4%) led sectors. Funds, trusts, and other financial vehicles led subsectors at 525.5%."
+  },
+  {
+    "objectID": "slides.html#tennessees-growth-shifted-after-2020",
+    "href": "slides.html#tennessees-growth-shifted-after-2020",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Tennessee’s growth shifted after 2020",
+    "text": "Tennessee’s growth shifted after 2020\n\n\nFinance, insurance, real estate, rental, and leasing became Tennessee’s most consistent post-2020 contributor. Leisure-related activity also rebounded sharply."
+  },
+  {
+    "objectID": "slides.html#context-challenges",
+    "href": "slides.html#context-challenges",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Context challenges",
+    "text": "Context challenges\n\n\n\nCode Mapping\nTo compare the two datasets, the codes were often grouped or stored differently and led to the need for code mapping.\n\n\n\nNAICS Levels of Detail\nMaking sure the level of detail remained in context across charts and filters was a major step. I had hoped to compare the levels of information as a hierarchy, but the values didn’t amount to the same when summed across NAICS levels.\n\n\n\nMeasuing Impact vs. Overall Growth"
+  },
+  {
+    "objectID": "slides.html#project-challenges",
+    "href": "slides.html#project-challenges",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Project challenges",
+    "text": "Project challenges\n\n\n\n01\n\n\n\nCode mapping\n\n\nTo compare the two datasets, the codes were often grouped or stored differently which led to the need for code mapping (both BEA and census data were more inconsistent as the level of detail increased).\n\n\n\n\n\n02\n\n\n\nNAICS levels of detail\n\n\nCharts and filters had to preserve the selected level of detail. If they weren’t included in the filter context, the aggregations would sum totals across hierarchies.\n\n\n\n\n\n03\n\n\n\nMeasuring impact vs. overall growth\n\n\nInitially the comparisons were solely with nominal GDP and GDP-per-capita values, but this didn’t reflect the regional impact of each industry."
+  },
+  {
+    "objectID": "slides.html#lessons-learned",
+    "href": "slides.html#lessons-learned",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Lessons Learned",
+    "text": "Lessons Learned\n\n\n\n\n\n\nTest Assumptions\n\n\nThe size and breadth of the data meant that each calculation needed to consider the assumptions used to frame the question and interpret the results.\n\n\n\n\n\n\n\nValidating Results\n\n\nTableau can aggregate large datasets quickly, but every visualization still needs validation. Confirm that filters and calculated measures use the intended context and level of detail.\n\n\n\n\n\n\n\nReframing the Question\n\n\nViewing the same data through another context can reveal questions and patterns that the original analysis may miss."
+  },
+  {
+    "objectID": "slides.html#sectors-and-subsectors-reveal-broader-trends",
+    "href": "slides.html#sectors-and-subsectors-reveal-broader-trends",
+    "title": "U.S. GDP Growth, Industry Change, Trade, and Tennessee",
+    "section": "Sectors and subsectors reveal broader trends",
+    "text": "Sectors and subsectors reveal broader trends\n\n\nConstruction (114.5%) and accommodation and food services (113.4%) led sectors. Funds, trusts, and other financial vehicles led subsectors at 525.5%."
   }
 ]
