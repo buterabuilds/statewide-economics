@@ -393,6 +393,26 @@ header#title-block-header {
   color: var(--muted);
 }
 
+.cell-output-display:has(.quarto-figure) {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.cell-output-display .quarto-figure,
+.cell-output-display figure {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0;
+}
+
+.cell-output-display img.figure-img {
+  display: block;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto;
+}
+
 .table {
   background: #ffffff;
 }
@@ -629,19 +649,5 @@ header#title-block-header {
   .cell-output-display:has(.table) {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-  }
-
-  .cell-output-display,
-  .cell-output-display .quarto-figure,
-  .cell-output-display figure {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  .cell-output-display img.figure-img {
-    display: block;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto;
   }
 }
