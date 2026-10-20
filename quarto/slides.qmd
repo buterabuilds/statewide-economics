@@ -152,6 +152,10 @@ Construction (**114.5%**) and accommodation and food services (**113.4%**) led s
 Real estate contributes strongly across regions, while manufacturing carries more weight in the Great Lakes, Plains, and Southeast.
 :::
 
+## Growth contribution in leading states
+
+![](assets/slides/state-contribution.png){.heatmap fig-alt="Heatmap comparing the cumulative contribution of twelve leading sectors across the ten states with the strongest GDP-per-capita growth from 2011 to 2024."}
+
 ## Manufactured goods dominate international trade
 
 ![](assets/slides/trade-value.png){.chart-wide fig-alt="Horizontal grouped bar chart showing cumulative export and import values by sector from 2010 to 2024. Manufactured goods are far larger than other categories."}
@@ -159,6 +163,10 @@ Real estate contributes strongly across regions, while manufacturing carries mor
 ::: {.slide-takeaway}
 Manufactured goods accounted for about **$20.0 trillion in exports** and **$31.5 trillion in imports** during the period.
 :::
+
+## Import and export exposure
+
+![](assets/slides/trade-exposure-kpis.png){.trade-kpis fig-alt="Two KPIs showing that 80.4 percent of states had declining export exposure from 2010 to 2024, while states with rising import exposure increased by an average of 2.1 percentage points."}
 
 ## Tennessee’s sector strengths
 

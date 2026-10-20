@@ -303,6 +303,7 @@ $font-family-sans-serif: "Inter", "Aptos", "Helvetica Neue", Arial, sans-serif;
 
 .chart-wide,
 .heatmap,
+.trade-kpis,
 .tn-ranks,
 .timeline,
 .sector-subsector {
@@ -318,6 +319,10 @@ $font-family-sans-serif: "Inter", "Aptos", "Helvetica Neue", Arial, sans-serif;
 
 .heatmap {
   max-height: 575px;
+}
+
+.trade-kpis {
+  max-height: 590px;
 }
 
 .tn-ranks {
